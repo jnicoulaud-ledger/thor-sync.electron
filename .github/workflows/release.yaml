@@ -24,7 +24,13 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [macos-11, ubuntu-18.04, windows-2019]
+        include:
+          - os: macos-11
+            ext: zip
+          - os: windows-2019
+            ext: exe
+          - os: ubuntu-18.04
+            ext: AppImage
     steps:
       - uses: actions/checkout@v2
 
@@ -52,7 +58,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Glob match
+        uses: tj-actions/glob@v16
+        id: glob
+        with:
+          files: build/*.${{ matrix.ext }}
+
       - name: Attach application to release
-        run: gh release upload ${{  github.ref_name }} build/*.* --clobber
+        run: gh release upload ${{  github.ref_name }} ${{ steps.glob.outputs.paths }} --clobber
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
