@@ -13,7 +13,7 @@ const connector: { connect(): Promise<Transport>, product: () => string | undefi
 
 const supported = !!connector
 
-const path = `44'/818'/0'/0`
+const path = `44'/60'/0'/0`
 
 function connect() {
   if (!connector) {
